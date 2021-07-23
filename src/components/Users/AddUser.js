@@ -5,9 +5,11 @@ import classes from "./AddUser.module.css";
 import { useFormik } from "formik";
 import addUserSchema from "../../validation/addUserSchema";
 import ErrorModal from "../UI/ErrorModal";
+import ValidatedInput from "../UI/ValidatedInput";
 
 const AddUser = (props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [error, setError] = useState({});
 
   const formik = useFormik({
     initialValues: {
@@ -17,6 +19,11 @@ const AddUser = (props) => {
     onSubmit: (values, onSubmitProps) => {
       if (!values.name.trim() || !values.age) {
         setIsModalOpen(true);
+        setError({
+          title: "Input error!",
+          message: "You need to fulfill every input with correct value",
+        });
+        return;
       }
       props.onAddUser(values);
       onSubmitProps.resetForm({});
@@ -24,31 +31,54 @@ const AddUser = (props) => {
     validationSchema: addUserSchema,
   });
 
+  const closeModalHandler = (e) => {
+    setIsModalOpen(false);
+  };
+
   return (
     <>
       {isModalOpen && (
-        <ErrorModal title="And error occurred" message="Something went wrong" />
+        <ErrorModal
+          title={error.title}
+          message={error.message}
+          onModalClose={closeModalHandler}
+        />
       )}
+
       <Card className={classes.input}>
+        <p style={{ color: "grey", marginTop: "0", textAlign: "center" }}>
+          To open modal you need to fulfill Username input with spaces and Age
+          input with correct number
+        </p>
+
         <form onSubmit={formik.handleSubmit}>
-          <label htmlFor="username">Username</label>
-          <input
-            type="text"
+          <ValidatedInput
             id="username"
+            title="Username"
+            type="text"
             name="name"
             value={formik.values.name}
             onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            isTouched={formik.touched.name}
+            error={formik.errors.name}
           />
-          <label htmlFor="age">Age</label>
-          <input
-            type="number"
+
+          <ValidatedInput
             id="age"
+            title="Age"
+            type="number"
             name="age"
             value={formik.values.age}
             onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            isTouched={formik.touched.age}
+            error={formik.errors.age}
             min={0}
+            max={100}
             step={1}
           />
+
           <Button type="submit">Add User</Button>
         </form>
       </Card>
