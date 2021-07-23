@@ -10,10 +10,11 @@ const ValidatedInput = ({
   onBlur,
   isTouched,
   error,
+  ref,
   ...props
 }) => {
   return (
-    <div>
+    <>
       <label htmlFor={id}>{title}</label>
       <input
         type={type}
@@ -25,11 +26,12 @@ const ValidatedInput = ({
         min={props.min}
         max={props.max}
         step={props.step}
+        ref={ref}
       />
       {isTouched && Boolean(error) ? (
         <div style={{ color: "red", marginBottom: "1rem" }}>{error}</div>
       ) : null}
-    </div>
+    </>
   );
 };
 

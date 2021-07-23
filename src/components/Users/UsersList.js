@@ -9,6 +9,9 @@ const UsersList = (props) => {
 
   return (
     <Card className={classes.users}>
+      {props.users.length !== 0 && (
+        <h3 style={{ textAlign: "center" }}>Users list</h3>
+      )}
       <ul>
         {props.users.length !== 0 ? (
           props.users.map((user) => (
